@@ -3,14 +3,14 @@
 Tiny utilities to work with the standard timeranges expected in
 FOT reports.  These utilities change back and forth from string
 specifications (e.g. "2009-Q1" for the first quarter of 2009) and
-"timerange" dictionaries which are of the form:
+"timerange" dictionaries which are of the form
 
-{ 'type' : 'quarter',
-  'start': mx.DateTime of the start time,
-  'stop' : mx.DateTime of the stop time,
-  'year' : 2009
-  'subid' : 'Q1'
-}
+ | { 'type' : 'quarter',
+ |   'start': mx.DateTime of the start time,
+ |   'stop' : mx.DateTime of the stop time,
+ |   'year' : 2009
+ |   'subid' : 'Q1'
+ | }
 """
 
 
@@ -163,11 +163,12 @@ def in_year(ref_date):
 
     :param ref_date: mx.DateTime reference date
     :rtype: range_string e.g. '2010'
-        """
+    """
     return "%4d" % ref_date.year
 
 def year_range(year):
-    """year start, stop
+    """find year start, stop
+
     :param year: int year
     :rtype: timerange dictionary
     """
@@ -222,10 +223,10 @@ def timerange(rstring):
     """
     range from string specifier
 
-    2010-M08 -> range of August 2010
-    2009-Q1 -> range of first quarter, 2009
-    2001-S1 -> range of first "semi" 2001
-    2008 -> range of year 2008
+    |  2010-M08 -> range of August 2010
+    |  2009-Q1 -> range of first quarter, 2009
+    |  2001-S1 -> range of first "semi" 2001
+    |  2008 -> range of year 2008
 
     :param rstring: range string
     :rtype: timerange dictionary
