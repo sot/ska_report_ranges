@@ -15,7 +15,7 @@ specifications (e.g. "2009-Q1" for the first quarter of 2009) and
 
 
 import re
-import mx.DateTime
+from Chandra.Time import DateTime
 import calendar
 
 month = {'Jan' : 1,
@@ -36,9 +36,10 @@ def in_quarter(ref_date):
 
     """ which FOT quarter contains a reference date
 
-    :param ref_date: mx.DateTime reference date
+    :param ref_date: reference date
     :rtype: range_string e.g. 2009-Q1
     """
+    ref_date = DateTime(ref_date)
     for_month = { 'Jan' : 1,
                   'Feb' : 2,
                   'Mar' : 2,
@@ -52,7 +53,7 @@ def in_quarter(ref_date):
                   'Nov' : 1,
                   'Dec' : 1 }
 
-    month = calendar.month_abbr[ ref_date.month ]
+    month = calendar.month_abbr[ ref_date.mon ]
     if month == 'Nov' or month =='Dec':
         year = ref_date.year + 1
     else:
@@ -88,8 +89,8 @@ def quarter_range(year, quarter):
         year_start = year
     month_stop = month[quarter_stops[quarter]]
     year_stop = year
-    start = mx.DateTime.Date( year_start, month_start)
-    stop = mx.DateTime.Date( year_stop, month_stop)
+    start = DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_start, month_start))
+    stop = DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_stop, month_stop))
     return { 'type' : 'quarter',
              'start': start,
              'stop' : stop,
@@ -105,6 +106,7 @@ def in_semi(ref_date):
     :rtype: range_string e.g. 2009-S1
     
     """
+    ref_date = DateTime(ref_date)
     for_month = { 'Jan' : 1,
                   'Feb' : 2,
                   'Mar' : 2,
@@ -118,8 +120,8 @@ def in_semi(ref_date):
                   'Nov' : 1,
                   'Dec' : 1 }
 
-    month = calendar.month_abbr[ ref_date.month ]
-    if ( ref_date.month >= 2 and ref_date.month < 8 ) or month == 'Jan':
+    month = calendar.month_abbr[ ref_date.mon ]
+    if ( ref_date.mon >= 2 and ref_date.mon < 8 ) or month == 'Jan':
         year = ref_date.year
     else:
         year = ref_date.year + 1
@@ -148,8 +150,8 @@ def semi_range(year, semi):
         year_start = year - 1
     month_stop = month[semi_stops[semi]]
     year_stop = year
-    start = mx.DateTime.Date( year_start, month_start)
-    stop = mx.DateTime.Date( year_stop, month_stop)
+    start = DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_start, month_start))
+    stop = DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_stop, month_stop))
     return { 'type' : 'semi',
              'start': start,
              'stop' : stop,
@@ -164,6 +166,7 @@ def in_year(ref_date):
     :param ref_date: mx.DateTime reference date
     :rtype: range_string e.g. '2010'
     """
+    ref_date = DateTime(ref_date)
     return "%4d" % ref_date.year
 
 def year_range(year):
@@ -173,8 +176,8 @@ def year_range(year):
     :rtype: timerange dictionary
     """
     return { 'type' : 'year',
-             'start': mx.DateTime.Date(int(year)),
-             'stop' : mx.DateTime.Date(int(year)+1),
+             'start': DateTime("{:04d}-01-01 00:00:00.000".format(int(year))),
+             'stop' : DateTime("{:04d}-01-01 00:00:00.000".format(int(year) + 1)),
              'year' : year,
              'subid' : 'YEAR' 
              }
@@ -185,7 +188,7 @@ def in_month(ref_date):
     :param ref_date: mx.DateTime reference date
     :rtype: range_string e.g. 2007-M12
     """
-    return "%4d-M%02d" % (ref_date.year, ref_date.month)
+    return "%4d-M%02d" % (ref_date.year, ref_date.mon)
 
 def month_range(year, month):
     """
@@ -202,13 +205,14 @@ def month_range(year, month):
         month_stop = 1
     
     return { 'type' : 'month',
-             'start': mx.DateTime.Date(year, month),
-             'stop' : mx.DateTime.Date(year_stop, month_stop),
+             'start': DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year, month)),
+             'stop' : DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_stop, month_stop)),
              'year' : year,
              'subid' : 'M%02d' % month, 
              }
 
 def in_range(range_type, ref_date):
+    ref_date = DateTime(ref_date)
     if range_type == 'month':
         return in_month(ref_date)
     if range_type == 'quarter':
@@ -252,12 +256,12 @@ def get_update_ranges(days=365):
     :param days: N days back as starting point
     :rtype: dict of labeled day ranges
     """
-    now = mx.DateTime.now()
+    now = DateTime()
     times = {}
     # works by performing the "in_range" operation on each day,
     # hence the walk through using range
     for day_back in range(0,days):
-        then = now - mx.DateTime.DateTimeDeltaFromDays(day_back)
+        then = now - day_back
         for range_type in ('month', 'quarter', 'semi', 'year'):
             time_str = in_range(range_type, then)
             if not times.has_key(time_str): 
@@ -272,7 +276,7 @@ def get_prev(range):
     :rtype: timerange dictionary
 
     """
-    ref_time = range['start'] - mx.DateTime.DateTimeDeltaFromSeconds(1)
+    ref_time = DateTime(range['start'].secs - 1)
     old_range = in_range(range['type'], ref_time)
     return timerange(old_range)
 
