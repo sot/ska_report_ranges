@@ -1,3 +1,4 @@
+# Licensed under a 3-clause BSD style license - see LICENSE.rst
 """
 
 Tiny utilities to work with the standard timeranges expected in
