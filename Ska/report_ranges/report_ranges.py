@@ -19,18 +19,18 @@ import re
 from Chandra.Time import DateTime
 import calendar
 
-month = {'Jan' : 1,
-         'Feb' : 2,
-         'Mar' : 3,
-         'Apr' : 4,
-         'May' : 5,
-         'Jun' : 6,
-         'Jul' : 7,
-         'Aug' : 8,
-         'Sep' : 9,
-         'Oct' : 10,
-         'Nov' : 11,
-         'Dec' : 12}
+month = {'Jan': 1,
+         'Feb': 2,
+         'Mar': 3,
+         'Apr': 4,
+         'May': 5,
+         'Jun': 6,
+         'Jul': 7,
+         'Aug': 8,
+         'Sep': 9,
+         'Oct': 10,
+         'Nov': 11,
+         'Dec': 12}
 
 
 def in_quarter(ref_date):
@@ -41,29 +41,26 @@ def in_quarter(ref_date):
     :rtype: range_string e.g. 2009-Q1
     """
     ref_date = DateTime(ref_date)
-    for_month = { 'Jan' : 1,
-                  'Feb' : 2,
-                  'Mar' : 2,
-                  'Apr' : 2,
-                  'May' : 3,
-                  'Jun' : 3,
-                  'Jul' : 3,
-                  'Aug' : 4,
-                  'Sep' : 4,
-                  'Oct' : 4,
-                  'Nov' : 1,
-                  'Dec' : 1 }
+    for_month = {'Jan': 1,
+                 'Feb': 2,
+                 'Mar': 2,
+                 'Apr': 2,
+                 'May': 3,
+                 'Jun': 3,
+                 'Jul': 3,
+                 'Aug': 4,
+                 'Sep': 4,
+                 'Oct': 4,
+                 'Nov': 1,
+                 'Dec': 1}
 
-    month = calendar.month_abbr[ ref_date.mon ]
-    if month == 'Nov' or month =='Dec':
+    month = calendar.month_abbr[ref_date.mon]
+    if month == 'Nov' or month == 'Dec':
         year = ref_date.year + 1
     else:
         year = ref_date.year
+    return "%4d-Q%d" % (year, for_month[month])
 
-    ref_quarter = { 'quarter' : for_month[ month ],
-                    'year' : year }
-    return "%4d-Q%d" % ( year, for_month[month] )
-    
 
 def quarter_range(year, quarter):
     """range of a FOT quarter
@@ -72,16 +69,15 @@ def quarter_range(year, quarter):
     :param quarter: 1,2,3, or 4
     :rtype: timerange dictionary
     """
-    quarter_starts = { 1 : 'Nov',
-                       2 : 'Feb',
-                       3 : 'May',
-                       4 : 'Aug' }
+    quarter_starts = {1: 'Nov',
+                      2: 'Feb',
+                      3: 'May',
+                      4: 'Aug'}
 
-    quarter_stops = { 1 : 'Feb',
-                      2 : 'May',
-                      3 : 'Aug',
-                      4 : 'Nov' }
-
+    quarter_stops = {1: 'Feb',
+                     2: 'May',
+                     3: 'Aug',
+                     4: 'Nov'}
 
     month_start = month[quarter_starts[quarter]]
     if month_start == 11:
@@ -92,12 +88,11 @@ def quarter_range(year, quarter):
     year_stop = year
     start = DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_start, month_start))
     stop = DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_stop, month_stop))
-    return { 'type' : 'quarter',
-             'start': start,
-             'stop' : stop,
-             'year' : year,
-             'subid' : 'Q%d' % quarter,
-             }
+    return {'type': 'quarter',
+            'start': start,
+            'stop': stop,
+            'year': year,
+            'subid': 'Q%d' % quarter}
 
 
 def in_semi(ref_date):
@@ -105,29 +100,28 @@ def in_semi(ref_date):
 
     :param ref_date: mx.DateTime reference date
     :rtype: range_string e.g. 2009-S1
-    
     """
     ref_date = DateTime(ref_date)
-    for_month = { 'Jan' : 1,
-                  'Feb' : 2,
-                  'Mar' : 2,
-                  'Apr' : 2,
-                  'May' : 2,
-                  'Jun' : 2,
-                  'Jul' : 2,
-                  'Aug' : 1,
-                  'Sep' : 1,
-                  'Oct' : 1,
-                  'Nov' : 1,
-                  'Dec' : 1 }
+    for_month = {'Jan': 1,
+                 'Feb': 2,
+                 'Mar': 2,
+                 'Apr': 2,
+                 'May': 2,
+                 'Jun': 2,
+                 'Jul': 2,
+                 'Aug': 1,
+                 'Sep': 1,
+                 'Oct': 1,
+                 'Nov': 1,
+                 'Dec': 1}
 
-    month = calendar.month_abbr[ ref_date.mon ]
-    if ( ref_date.mon >= 2 and ref_date.mon < 8 ) or month == 'Jan':
+    month = calendar.month_abbr[ref_date.mon]
+    if (ref_date.mon >= 2 and ref_date.mon < 8) or month == 'Jan':
         year = ref_date.year
     else:
         year = ref_date.year + 1
-    return "%4d-S%d" % (year, for_month[ month ])
-    
+    return "%4d-S%d" % (year, for_month[month])
+
 
 def semi_range(year, semi):
     """range of a FOT half-year
@@ -136,13 +130,11 @@ def semi_range(year, semi):
     :param semi: 1,2
     :rtype: timerange dictionary
     """
-    semi_starts = { 1 : 'Aug',
-                    2 : 'Feb',
-                    }
+    semi_starts = {1: 'Aug',
+                   2: 'Feb'}
 
-    semi_stops = { 1 : 'Feb',
-                   2 : 'Aug',
-                   }
+    semi_stops = {1: 'Feb',
+                  2: 'Aug'}
 
     month_start = month[semi_starts[semi]]
     if month_start < 8:
@@ -153,12 +145,11 @@ def semi_range(year, semi):
     year_stop = year
     start = DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_start, month_start))
     stop = DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_stop, month_stop))
-    return { 'type' : 'semi',
-             'start': start,
-             'stop' : stop,
-             'year' : year,
-             'subid' : 'S%d' % semi,
-             }
+    return {'type': 'semi',
+            'start': start,
+            'stop': stop,
+            'year': year,
+            'subid': 'S%d' % semi}
 
 
 def in_year(ref_date):
@@ -170,18 +161,19 @@ def in_year(ref_date):
     ref_date = DateTime(ref_date)
     return "%4d" % ref_date.year
 
+
 def year_range(year):
     """find year start, stop
 
     :param year: int year
     :rtype: timerange dictionary
     """
-    return { 'type' : 'year',
-             'start': DateTime("{:04d}-01-01 00:00:00.000".format(int(year))),
-             'stop' : DateTime("{:04d}-01-01 00:00:00.000".format(int(year) + 1)),
-             'year' : year,
-             'subid' : 'YEAR' 
-             }
+    return {'type': 'year',
+            'start': DateTime("{:04d}-01-01 00:00:00.000".format(int(year))),
+            'stop': DateTime("{:04d}-01-01 00:00:00.000".format(int(year) + 1)),
+            'year': year,
+            'subid': 'YEAR'}
+
 
 def in_month(ref_date):
     """ which month contains a reference date
@@ -191,10 +183,11 @@ def in_month(ref_date):
     """
     return "%4d-M%02d" % (ref_date.year, ref_date.mon)
 
+
 def month_range(year, month):
     """
     month range
-    
+
     :param year: year
     :param month: integer month
     :rtype: timerange dictionary
@@ -204,13 +197,13 @@ def month_range(year, month):
     if month_stop == 13:
         year_stop = year + 1
         month_stop = 1
-    
-    return { 'type' : 'month',
-             'start': DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year, month)),
-             'stop' : DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_stop, month_stop)),
-             'year' : year,
-             'subid' : 'M%02d' % month, 
-             }
+
+    return {'type': 'month',
+            'start': DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year, month)),
+            'stop': DateTime("{:04d}-{:02d}-01 00:00:00.000".format(year_stop, month_stop)),
+            'year': year,
+            'subid': 'M%02d' % month}
+
 
 def in_range(range_type, ref_date):
     ref_date = DateTime(ref_date)
@@ -224,6 +217,7 @@ def in_range(range_type, ref_date):
         return in_year(ref_date)
     raise ValueError("unexpected range_type, not 'month', 'quarter', 'semi', or 'year'")
 
+
 def timerange(rstring):
     """
     range from string specifier
@@ -236,18 +230,18 @@ def timerange(rstring):
     :param rstring: range string
     :rtype: timerange dictionary
     """
-    m_match = re.search('(\d{4})-M(\d{2})', rstring)
+    m_match = re.search(r'(\d{4})-M(\d{2})', rstring)
     if m_match:
         return month_range(int(m_match.group(1)), int(m_match.group(2)))
-    q_match = re.search('(\d{4})-Q(\d{1})', rstring)
+    q_match = re.search(r'(\d{4})-Q(\d{1})', rstring)
     if q_match:
         return quarter_range(int(q_match.group(1)), int(q_match.group(2)))
-    s_match = re.search('(\d{4})-S(\d{1})', rstring)
+    s_match = re.search(r'(\d{4})-S(\d{1})', rstring)
     if s_match:
         return semi_range(int(s_match.group(1)), int(s_match.group(2)))
-    y_match = re.search('(\d{4})', rstring)
+    y_match = re.search(r'(\d{4})', rstring)
     if y_match:
-        return year_range( int(y_match.group(1)))
+        return year_range(int(y_match.group(1)))
 
 
 def get_update_ranges(days=365):
@@ -261,13 +255,14 @@ def get_update_ranges(days=365):
     times = {}
     # works by performing the "in_range" operation on each day,
     # hence the walk through using range
-    for day_back in range(0,days):
+    for day_back in range(0, days):
         then = now - day_back
         for range_type in ('month', 'quarter', 'semi', 'year'):
             time_str = in_range(range_type, then)
-            if not times.has_key(time_str): 
+            if time_str not in times:
                 times[time_str] = timerange(time_str)
     return times
+
 
 def get_prev(range):
     """
@@ -280,6 +275,7 @@ def get_prev(range):
     ref_time = DateTime(range['start'].secs - 1)
     old_range = in_range(range['type'], ref_time)
     return timerange(old_range)
+
 
 def get_next(range):
     """
